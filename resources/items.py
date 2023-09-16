@@ -14,26 +14,26 @@ class Items(MethodView):
             item |=request.get_json()
             return {"item":item}
         except KeyError:
-            return {"message":"item not found"}
+            abort (404, message="Item Not Found")
     
     def delete(self,item_id):
         try:
             del items[item_id]
             return {"message":"item deleted succesfully"}
         except KeyError:
-            return {"message":"item not found"}
-        
+            abort (400, message="Item Not Found")
+            
 @blp.route("/items/<string:store_id>")        
 class Items(MethodView):
     def post(self,store_id):
         new_item=request.get_json()
         item_id=uuid.uuid4().hex
-        for store in stores.values():
-            if store["id"]==store_id:
-                item={"name":new_item["name"],"price":new_item["price"],"store_id":store_id }
-                items[item_id]=item
-                return {"Items":items}
-        return {"message":"store not found"}
+        if store_id in stores:
+            item={"name":new_item["name"],"price":new_item["price"],"store_id":store_id }
+            items[item_id]=item
+            return {"Items":items}
+        return {"message":"Store id not found"}
+
 
 @blp.route("/items")
 class Items(MethodView):
