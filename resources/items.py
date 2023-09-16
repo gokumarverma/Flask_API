@@ -32,7 +32,7 @@ class Items(MethodView):
             item={"name":new_item["name"],"price":new_item["price"],"store_id":store_id }
             items[item_id]=item
             return {"Items":items}
-        return {"message":"Store id not found"}
+        abort(404, message="Bad Request, store not found")
 
 
 @blp.route("/items")
