@@ -3,13 +3,14 @@ from flask import request
 from flask.views import MethodView
 import uuid
 from db import stores
+from resources.schemas import StoreSchema, StoreUpdateSchema
 
 blp=Blueprint("Stores", __name__, description="operations on stores.")
 
 @blp.route("/store/<string:store_id>")
 class Store(MethodView):
-    def put(self,store_id):
-        store_data=request.get_json()          
+    @blp.arguments(StoreUpdateSchema)
+    def put(self,store_data,store_id):    
         try:
             stores[store_id]["name"]=store_data["name"]
             return stores
@@ -26,8 +27,8 @@ class Store(MethodView):
     
 @blp.route("/store")
 class Store(MethodView):
-    def post(self):
-        store_data=request.get_json()
+    @blp.arguments(StoreSchema)
+    def post(self,store_data):
         store_id=uuid.uuid4().hex
         store={**store_data}
         stores[store_id]=store
